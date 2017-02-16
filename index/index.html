@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title></title>
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+	<style>
+		html, body {
+			padding: 0;
+			margin: 0;
+			min-height: 100%;
+			min-width: 100%;
+		}
+		body {
+			background: #45484d;
+			background: radial-gradient(ellipse at center,  #45484d 0%,#000000 100%);
+			display: table;
+			position: absolute;
+			height: 100%;
+			width: 100%;
+			font-family: 'Open Sans', sans-serif;
+			font-size: 12px;
+			color: white;
+		}
+		#wrap {
+			display: table-cell;
+			vertical-align: middle;
+		}
+		#player {
+			height: 110px;
+			width: 400px;
+			margin: 0 auto;
+			background: #8db4d3;
+			background: linear-gradient(135deg, #8db4d3 0%,#598cbf 31%,#04487c 100%);
+			box-shadow: 0px 0px 5px 0px rgba(20,0,168,1);
+			position: relative;
+		}
+		#artwork {
+			height: 100px;
+			width: 100px;
+			position: absolute;
+			top: 5px;
+			left: 5px;
+		}
+		#artist {
+			top: 30px;
+			left: 110px;
+			right: 5px;
+			height: 15px;
+			position: absolute;
+			font-weight: bold;
+		}
+		#name {
+			top: 50px;
+			left: 110px;
+			right: 5px;
+			height: 15px;
+			position: absolute;
+		}
+		#widgets {
+			top: 5px;
+			right: 40px;
+			width: 130px;
+			height: 20px;
+			position: absolute;
+			border-radius: 15px;
+			font-size: 10px;
+			color: #aaaaaa;
+			background: rgba(0,0,0,0.6);
+			border: 1px inset #505050;
+		}
+		#time {
+			float: left;
+			display: block;
+			margin-top: 3px;
+			margin-left: 10px;
+		}
+		#repeat {
+			float: right;
+			display: block;
+			margin-top: 3px;
+			margin-right: 10px;
+			height:10px;
+		}
+		#shuffle {
+			float: right;
+			display: block;
+			margin-top: 3px;
+			margin-right: 10px;
+			height: 10px;
+		}
+		#buttons {
+			position: absolute;
+			bottom: 5px;
+			right: 40px;
+			width: 240px;
+			height: 25px;
+			background: rgba(0, 0, 0, 0.6);
+			border: 1px inset #505050;
+			border-radius: 25px;
+		}
+		button:first-child {
+			margin-left:13px;
+		}
+		button {
+			margin-top: 3px;
+			width: 70px;	
+			-moz-box-shadow:inset 0px 0px 15px 3px #23395e;
+			-webkit-box-shadow:inset 0px 0px 15px 3px #23395e;
+			box-shadow:inset 0px 0px 15px 3px #23395e;
+			background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #2e466e), color-stop(1, #415989));
+			background:-moz-linear-gradient(top, #2e466e 5%, #415989 100%);
+			background:-webkit-linear-gradient(top, #2e466e 5%, #415989 100%);
+			background:-o-linear-gradient(top, #2e466e 5%, #415989 100%);
+			background:-ms-linear-gradient(top, #2e466e 5%, #415989 100%);
+			background:linear-gradient(to bottom, #2e466e 5%, #415989 100%);
+			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#2e466e', endColorstr='#415989',GradientType=0);
+			background-color:#2e466e;
+			-moz-border-radius:5px;
+			-webkit-border-radius:5px;
+			border-radius:5px;
+			border:1px solid #1f2f47;
+			display:inline-block;
+			cursor:pointer;
+			color:#ffffff;
+			text-decoration:none;
+			text-shadow:0px 1px 0px #263666;
+		}
+		button:hover {
+			background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #415989), color-stop(1, #2e466e));
+			background:-moz-linear-gradient(top, #415989 5%, #2e466e 100%);
+			background:-webkit-linear-gradient(top, #415989 5%, #2e466e 100%);
+			background:-o-linear-gradient(top, #415989 5%, #2e466e 100%);
+			background:-ms-linear-gradient(top, #415989 5%, #2e466e 100%);
+			background:linear-gradient(to bottom, #415989 5%, #2e466e 100%);
+			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#415989', endColorstr='#2e466e',GradientType=0);
+			background-color:#415989;
+		}
+		button:active {
+			position:relative;
+			top:1px;
+		}
+		input[type=range][orient=vertical] {
+			position: absolute;
+			top: 5px;
+			right: 5px;
+			bottom: 5px;
+			writing-mode: bt-lr; /* IE */
+			-webkit-appearance: slider-vertical; /* WebKit */
+			width: 8px;
+			padding: 0 5px;
+		}
+
+		.Paused .fa-pause {
+			color: yellow;
+		}
+
+		.Playing .fa-play {
+			color: yellow;
+		}
+
+
+		.fa-random, .fa-repeat {
+			color: #555555;
+		}
+		.shuffle .fa-random, .repeat .fa-repeat {
+			color: #cccccc;
+		}
+
+	</style>
+</head>
+<body>
+	<div id="wrap">
+		<div id="player" :class="Status.State">
+			<img id="artwork" :src="Status.Artwork">
+			<div id="artist">{{ Status.Artist }}</div>
+			<div id="name"> {{ Status.Name }} </div>
+			<div id="widgets" v-bind:class="{ shuffle: Status.Shuffle, repeat: Status.Repeat }">
+				<span id="time"> {{ formatTime(Status.Position) }}  / {{ formatTime(Status.Duration / 1000) }}</span>
+				<span id="repeat"><i class="fa fa-repeat" aria-hidden="true"></i></span>
+				<span id="shuffle"><i class="fa fa-random" aria-hidden="true"></i></span>
+			</div>
+			<div id="buttons"><button v-on:click="previousTrack"><i class="fa fa-step-backward" aria-hidden="true"></i></button><button v-on:click="playPause"><i class="fa fa-pause" aria-hidden="true"></i> <i class="fa fa-play" aria-hidden="true"></i></button><button v-on:click="nextTrack"><i class="fa fa-step-forward" aria-hidden="true"></i></button></div>
+			<input v-on:mousedown="drag" v-on:mouseup="drop" v-on:change="setVolume" type="range" min="0" max="100" step="1" orient="vertical" v-model="Status.Volume">
+		</div>
+	</div>
+	<script src="https://unpkg.com/vue/dist/vue.js"></script>
+	<script>
+		if( typeof(WebSocket) != "function" ) {
+			document.body.innerHTML = "<h1>Error</h1><p>Your browser does not support HTML5 Web Sockets. Try Google Chrome instead.</p>";
+		}
+		var s = new WebSocket("ws://" + location.hostname + ':' + location.port + "/ws");
+
+		var app = new Vue({
+			el: '#wrap',
+			data: {
+				Status: {
+					Volume: 0,
+					State: 'Loading',
+					Repeat: false,
+					Shuffle: false,
+					Position: 0,
+					Artist: "Please wait...",
+					Name: "Loading",
+					Artwork: "",
+					Duration: 0,
+					Popularity: 0
+				}
+			},
+			methods: {
+				drag: function() {
+					window.clearTimeout(this.dropwait)
+					this.dragging = true;
+				},
+
+				drop: function() {
+					this.dropwait = window.setTimeout(function() {
+						this.dragging = false;
+					}.bind(this), 300)
+				},
+				setVolume: function () {
+					s.send(JSON.stringify({Action: "setVolume", Value: app.$data.Status.Volume}));
+				},
+				playPause: function() {
+					s.send('{"Action":"playPause"}');
+				},
+				nextTrack: function() {
+					s.send('{"Action":"nextTrack"}');
+				},
+				previousTrack: function() {
+					s.send('{"Action":"previousTrack"}');
+				},
+				formatTime : function (value) {
+					var minutes = Math.floor(value / 60);
+					var seconds = Math.floor(value - minutes * 60);
+    				return minutes + ":" + (new Array(2+1).join("0")+""+seconds).slice(-2);
+				}
+
+			}
+		});
+
+		s.onmessage = function(event) {
+			var o = JSON.parse(event.data);
+			if (app.dragging) {
+				delete o["Volume"];
+			}
+			console.log(o.Duration)
+			app.$data.Status = Object.assign({}, app.$data.Status, o);
+		}
+	</script>
+</body>
+</html>

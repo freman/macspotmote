@@ -1,0 +1,17 @@
+language: go
+go:
+- 1.7
+script:
+- go vet
+- go get
+- mkdir -p releases
+- CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -ldflags "-X main.version=$TRAVIS_TAG
+  -X main.commit=$TRAVIS_COMMIT" -o release/macspotmote github.com/freman/macspotmote
+deploy:
+  provider: releases
+  api_key:
+    secure: I6v4Jz8u2OKpzbocbY0angzvxZ30eQd4F7GSijOoJNz/j1RvzSg+L9DV/YRBWLskr/jBxoJS6g2yf+vvtpSJvjyFWRLgtQylCo5WP05uIqbThGww4WzAJBxITzb/P8ZEc5l+nAwb2vuaZKDdhcsgQMJ33OOF2s0bejduLXcx5djaOm61dBQG7NgLD4Tly+jLgUkcxIibkES21048KZFUT40etD+LpRngPwKiykqfb96d6ujqF0brLAhLyaJxV6CsbPqg43erZAaQPvtROglF5WsjfNmdQyZfJF3cNRmFUipwBUWG6IqnT1P3ecNvjAmFuq9o2sBDq77oc1C9Mcb2hUHCs+yDDQWg7uqMF6PiKc8cSOjfW0/pre9qW1jVAfgdIWFzYEAjgKH6n1LaeRjzB2nd9jObcdCI6K1XttxHMe7YFzt5ReqWo7IOew6JYw/HYbVI8B9VpWxOf7Uhg5hncWuC7d+Th9AHvO0w+juIIHi9GI+ey3R+a03xwywEnRnYAVlMJ2R4Vj9LZ7nMd9xilW29IB2AAQ71uPIZGJBWqWOcnE2jZ7unFPW/A92eLygpwf2ZkdrKOQWx0vQpyMX0xQPEdoK300u4tK4e2Vgu7KGgkPA34Jpm+ZXa8ntL0dCZL40McHmMNvUltvPVRk7nPEWcU9cMW1xi8p1twDhGIbQ=
+  file: releases/macspotmote
+  on:
+    repo: freman/macspotmote
+    tags: true
