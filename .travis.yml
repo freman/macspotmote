@@ -6,7 +6,7 @@ script:
 - go get
 - mkdir -p releases
 - CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -ldflags "-X main.version=$TRAVIS_TAG
-  -X main.commit=$TRAVIS_COMMIT" -o release/macspotmote github.com/freman/macspotmote
+  -X main.commit=$TRAVIS_COMMIT" -o releases/macspotmote github.com/freman/macspotmote
 deploy:
   provider: releases
   api_key:
