@@ -11,6 +11,13 @@ go get github.com/freman/macspotmote
 $GOPATH/bin/macspotmote
 ```
 
+## OSX Hax
+
+Wrap the app in [Fluid](http://fluidapp.com/) for a more desktop feel.
+
+![image](https://cloud.githubusercontent.com/assets/506680/23049453/f557cfee-f507-11e6-890b-a08819ca40bd.png)
+
+
 ## Modifying the index.html file
 
 If you're going to modify the index.html file you're going to need rice to compile it in
