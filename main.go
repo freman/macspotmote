@@ -50,18 +50,24 @@ var (
 	commit  = "Undefined"
 )
 
+var btcheck *string
+
 var status = struct {
-	Volume     int
-	State      string
-	Repeat     bool
-	Shuffle    bool
-	Artist     string
-	Name       string
-	Artwork    string
-	Position   float64
-	Duration   int
-	Popularity int
-}{}
+	Volume        int
+	State         string
+	Repeat        bool
+	Shuffle       bool
+	Artist        string
+	Name          string
+	Artwork       string
+	Position      float64
+	Duration      int
+	Popularity    int
+	BluetoothOK   bool
+	BluetoothName string
+}{
+	BluetoothOK: true,
+}
 
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
@@ -150,6 +156,10 @@ func reader(ws *websocket.Conn) {
 			Action string
 			Value  string
 		}{}
+
+		if status.BluetoothOK {
+			continue
+		}
 
 		err = json.Unmarshal(m, &obj)
 		if err != nil {
@@ -244,6 +254,7 @@ func serveHome(w http.ResponseWriter, r *http.Request) {
 func main() {
 	addr := flag.String("addr", ":8080", "http service address")
 	showVersion := flag.Bool("version", false, "Show version and exit")
+	btcheck = flag.String("btcheck", "", "Check for a bt device being connected")
 	flag.Parse()
 
 	if *showVersion {
@@ -252,11 +263,27 @@ func main() {
 		return
 	}
 
+	if *btcheck != "" {
+		var err error
+		status.BluetoothName = *btcheck
+		status.BluetoothOK, err = bluetoothConnected(*btcheck)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
 	refreshStatus("")
 	go func() {
 		ticker := time.NewTicker(refreshInterval)
 		for range ticker.C {
 			refreshStatus("")
+			if *btcheck != "" {
+				var err error
+				status.BluetoothOK, err = bluetoothConnected(*btcheck)
+				if err != nil {
+					log.Error(err)
+				}
+			}
 		}
 	}()
 
