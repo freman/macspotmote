@@ -27,7 +27,7 @@
 			display: table-cell;
 			vertical-align: middle;
 		}
-		#player, #bluetoothError {
+		#player {
 			height: 110px;
 			width: 400px;
 			margin: 0 auto;
@@ -35,11 +35,6 @@
 			background: linear-gradient(135deg, #8db4d3 0%,#598cbf 31%,#04487c 100%);
 			box-shadow: 0px 0px 5px 0px rgba(20,0,168,1);
 			position: relative;
-		}
-		#bluetoothError {
-			padding-top: 30px;
-			text-align: center;
-			text-shadow: 0px 0px 3px rgba(0, 0, 0, 1);
 		}
 		#artwork {
 			height: 100px;
@@ -179,10 +174,7 @@
 </head>
 <body>
 	<div id="wrap">
-		<div id="bluetoothError" v-if="BluetoothError != ''">
-			{{ BluetoothError }}
-		</div>
-		<div id="player" :class="Status.State" v-else>
+		<div id="player" :class="Status.State">
 			<img id="artwork" :src="Status.Artwork">
 			<div id="artist">{{ Status.Artist }}</div>
 			<div id="name"> {{ Status.Name }} </div>
@@ -215,11 +207,8 @@
 					Name: "Loading",
 					Artwork: "",
 					Duration: 0,
-					Popularity: 0,
-					BluetoothOK: false,
-					BluetoothName: ""
-				},
-				BluetoothError: ""
+					Popularity: 0
+				}
 			},
 			methods: {
 				drag: function() {
@@ -260,13 +249,6 @@
 			}
 			console.log(o.Duration)
 			app.$data.Status = Object.assign({}, app.$data.Status, o);
-			if (o.BluetoothOK) {
-				if (app.$data.BluetoothError != "") {
-					app.$data.BluetoothError = ""
-				}
-			} else {
-				app.$data.BluetoothError = "Bluetooth device '" + o.BluetoothName + "' not connected."
-			}
 		}
 	</script>
 </body>
