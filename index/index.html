@@ -180,8 +180,8 @@
 			<div id="name"> {{ Status.Name }} </div>
 			<div id="widgets" v-bind:class="{ shuffle: Status.Shuffle, repeat: Status.Repeat }">
 				<span id="time"> {{ formatTime(Status.Position) }}  / {{ formatTime(Status.Duration / 1000) }}</span>
-				<span id="repeat"><i class="fa fa-repeat" aria-hidden="true"></i></span>
-				<span id="shuffle"><i class="fa fa-random" aria-hidden="true"></i></span>
+				<span id="repeat" v-on:click="toggleRepeat"><i class="fa fa-repeat" aria-hidden="true"></i></span>
+				<span id="shuffle" v-on:click="toggleShuffle"><i class="fa fa-random" aria-hidden="true"></i></span>
 			</div>
 			<div id="buttons"><button v-on:click="previousTrack"><i class="fa fa-step-backward" aria-hidden="true"></i></button><button v-on:click="playPause"><i class="fa fa-pause" aria-hidden="true"></i> <i class="fa fa-play" aria-hidden="true"></i></button><button v-on:click="nextTrack"><i class="fa fa-step-forward" aria-hidden="true"></i></button></div>
 			<input v-on:mousedown="drag" v-on:mouseup="drop" v-on:change="setVolume" type="range" min="0" max="100" step="1" orient="vertical" v-model="Status.Volume">
@@ -232,6 +232,12 @@
 				},
 				previousTrack: function() {
 					s.send('{"Action":"previousTrack"}');
+				},
+				toggleRepeat: function() {
+					s.send('{"Action":"toggleRepeat"}')
+				},
+				toggleShuffle: function() {
+					s.send('{"Action":"toggleShuffle"}')
 				},
 				formatTime : function (value) {
 					var minutes = Math.floor(value / 60);

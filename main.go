@@ -32,6 +32,7 @@ import (
 	"github.com/davecgh/go-spew/spew"
 	"github.com/everdev/mack"
 	"github.com/gorilla/websocket"
+	"github.com/jasonlvhit/gocron"
 
 	log "github.com/Sirupsen/logrus"
 )
@@ -133,6 +134,14 @@ func prevTrack() error {
 	return refreshStatus("previous track")
 }
 
+func toggleShuffle() error {
+	return refreshStatus("set shuffling to " + strconv.FormatBool(!status.Shuffle))
+}
+
+func toggleRepeat() error {
+	return refreshStatus("set repeating to " + strconv.FormatBool(!status.Repeat))
+}
+
 func reader(ws *websocket.Conn) {
 	defer ws.Close()
 	ws.SetReadLimit(512)
@@ -166,6 +175,10 @@ func reader(ws *websocket.Conn) {
 			nextTrack()
 		case "prevTrack":
 			prevTrack()
+		case "toggleShuffle":
+			toggleShuffle()
+		case "toggleRepeat":
+			toggleRepeat()
 		}
 
 	}
@@ -243,6 +256,7 @@ func serveHome(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	addr := flag.String("addr", ":8080", "http service address")
+	autoShuffle := flag.Bool("autoshuffle", false, "Automatically re-shuffle at midnight")
 	showVersion := flag.Bool("version", false, "Show version and exit")
 	flag.Parse()
 
@@ -250,6 +264,12 @@ func main() {
 		fmt.Printf("esudp - %s (%s)\n", version, commit)
 		fmt.Println("https://github.com/freman/macspotmote")
 		return
+	}
+
+	if *autoShuffle {
+		gocron.Every(1).Day().At("00:00").Do(func() {
+			mack.Tell("Spotify", "set shuffling to false\nset shuffling to true")
+		})
 	}
 
 	refreshStatus("")
